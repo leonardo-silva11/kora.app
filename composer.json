@@ -1,0 +1,26 @@
+{
+    "name": "dev-leonardo-s-s/kora.app",
+    "description": "The magic app using Kora Framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "leonardo Souza da Silva",
+            "email": "dev.leonardo.s.s@gmail.com"
+        }
+    ],       
+    "autoload": {
+        "psr-4": {
+            "App\\":"app/"
+        }
+    },         
+    "config": {
+        "sort-packages": true
+    },     
+    "require": 
+    {
+        "php":">=8.1",
+        "symfony/var-dumper": ">=5.4",
+        "dev-leonardo-s-s/kora.app":">= 1.0.0"
+    }
+}

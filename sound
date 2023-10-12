@@ -1,0 +1,19 @@
+<?php
+namespace kora;
+
+class Sound
+{
+    private $argv;
+
+    public function __construct()
+    {
+        $this->argv = $_SERVER['argv'];
+        $this->cmd();
+    }
+
+    private function cmd()
+    {
+        print_r($this->argv);exit;
+    }
+}
+(new Sound());

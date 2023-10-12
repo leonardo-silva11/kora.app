@@ -1,0 +1,27 @@
+{
+    "default": "kora/main",
+    "apps":
+    {
+        "kora/main":
+        {
+            "Home/index":
+            {
+                "verbs": ["get"],
+                "filters": [
+    
+                ]
+            }
+
+        },
+        "kora/docs":
+        {
+            "Home/index":
+            {
+                "verbs": ["get"],
+                "filters": [
+    
+                ]
+            }
+        }
+    }
+}
