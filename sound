@@ -1,19 +1,92 @@
+#!/usr/bin/env php
 <?php
-namespace kora;
+
+use kora\cli\cmd\MakeAppCommand;
+use kora\cli\cmd\MakeControllerCommand;
+use kora\cli\cmd\ORM;
+
+require_once(__DIR__.'/vendor/autoload.php');
 
 class Sound
 {
     private $argv;
+    private ORM $ORM;
+
+    private $cmd = [
+        "orm:make:entity" => "makeEntity",
+        'orm:make:migration' => "makeMigration",
+        'orm:exec:migrations' => "execMigrations",
+        'orm:exec:migration' => "execMigrations"
+    ];
 
     public function __construct()
     {
+        $this->ORM = new ORM(__DIR__);
         $this->argv = $_SERVER['argv'];
         $this->cmd();
     }
 
     private function cmd()
     {
-        print_r($this->argv);exit;
+    
+        $cmd = isset($this->argv[1]) ? $this->argv[1] : null;
+  
+        if(!empty($cmd))
+        {
+            if(array_key_exists($cmd,$this->cmd))
+            {
+                $m = $this->cmd[$cmd];
+                
+                unset($this->argv[0],$this->argv[1]);
+
+                if(method_exists($this,$m))
+                {
+                    $this->{$m}($this->argv);
+                }
+            }
+        }
+        else
+        {
+            $this->showHelp();
+        }
+    }
+
+    private function makeEntity($arg = [])
+    {
+        $this->ORM->config($arg);
+        $this->ORM->makeEntity();
+    }
+
+    private function makeMigration($arg = [])
+    {
+        $this->ORM->config($arg);
+        $this->ORM->makeMigration();
+    }
+
+    private function execMigrations($arg = [])
+    {
+        $this->ORM->config($arg);
+        $this->ORM->execMigrations();
+    }
+
+    private function makeApp()
+    {
+         $make = new MakeAppCommand();  
+         $make->exec(); 
+    }
+
+    private function makeController()
+    {
+         $make = new MakeControllerCommand();  
+         $make->exec(); 
+    }
+
+    private function showHelp()
+    {
+        // Exiba uma mensagem de ajuda ou lista de comandos disponíveis
+        echo "Sound CLI - Comandos disponíveis:" . PHP_EOL;
+        echo "make:app - Cria um novo aplicativo" . PHP_EOL;
     }
 }
+
 (new Sound());

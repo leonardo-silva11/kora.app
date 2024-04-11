@@ -1,0 +1,6 @@
+{
+    "appsettings":
+    {
+        "path": "/var/phpDefaultStorageKora/appsettings.json"
+    }
+}

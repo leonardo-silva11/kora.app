@@ -1,0 +1,76 @@
+{
+    "home":
+    {
+        "actions":
+        {
+            "index":
+            {
+                "type": "api",
+                "path": "Home/index",
+                "verbs": 
+                 {
+                     "get": ["?name","age","height"],
+                     "post": ["A2","image",":get"],
+                     "put": ["?teste",":get"],
+                     "delete": ["id"],
+                     "file": ["image"]
+                 },
+                "filters": 
+                {
+                    "after": 
+                    {
+                        "Authentication":
+                        {
+                            "methods" : ["finished"]                  
+                        }
+                    },
+                    "before": 
+                    {
+                        "Authentication":
+                        {
+                            "methods" : ["expiredToken","requestToken"]                         
+                        },
+                        "FilterTest": 
+                        {
+                            "methods" : ["test1","test2"]  
+                        }
+                    }
+                }
+            },
+            "help":
+            {
+                "path": "Home/help",
+                "verbs":
+                {
+                    "get":[]
+                }
+            }
+        },
+        "services":
+        {
+            "constructor":
+            {
+                "object": ["kora\\lib\\collections\\Collections"],
+                "params":{"A1":"B","A2":"C","age":":age"}
+            },
+            "index":
+            {
+                
+            },
+            "finished":
+            {
+                "object": ["kora\\lib\\collections\\Collections"],
+                "params": {"age":":age","height":":height","fixedParam":"Minha informação fixa"}
+            },
+            "requestToken":
+            {
+                "object": ["kora\\lib\\collections\\Collections"],
+                "params": {"name":":name","height":":height","fixedParamrequestToken":"Minha informação fixa para o método requestToken"}
+            },
+            "expiredToken":
+            {
+                "params": {"name":":name","fixedParamexpiredToken":"Minha informação fixa para o método expiredToken"}
+            }
+        }
+    }
+}
