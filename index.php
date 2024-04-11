@@ -1,6 +1,5 @@
 <?php
 use kora\bin\RouterKora;
-use kora\lib\exceptions\DefaultException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use kora\lib\storage\DirectoryManager;
 
@@ -8,8 +7,7 @@ require_once(__DIR__ . "/vendor/autoload.php");
 
 class Main
 {
-    private ?string $nameApp = null;
-    private const FILE_SETTINGS_JSON = 'appsettings.json'; 
+    private string $nameProject;
     private static $instance = null;
     private static $exceptionSettings = [
         'line' => true,
@@ -21,7 +19,7 @@ class Main
     public function __construct()
     {
         ini_set('display_errors', 1);
-        $this->nameApp = basename(__DIR__);
+        $this->nameProject = basename(__DIR__);
     }
 
     private function lastInterruptionException(Throwable $th)
@@ -47,34 +45,26 @@ class Main
         exit();
     }
 
-    private function getPathAppSettings($pathAppSettings = null) : string
+    public function getProject()
     {
-        $path = $pathAppSettings;
-      
+        return $this->nameProject;
+    }
+
+    public function getDefaultStorage() : DirectoryManager
+    {
         try 
         {
-            if(empty($path))
-            {
-                $dir = new DirectoryManager($this->nameApp);
-                $path = sprintf("{$dir->getCurrentStorage()}{$dir->getDirectorySeparator()}%s",self::FILE_SETTINGS_JSON);
-                dd($path);
-            }
+            $dir = new DirectoryManager($this->nameProject);
 
-
-            if(!file_exists($path))
-            {
-                throw new DefaultException("{{$path}} not found!");
-            }
+            return $dir;
         } 
         catch (\Throwable $th) 
         {
             self::$instance->lastInterruptionException($th);
         }
-
-        return $path;
     }
 
-    public static function start($pathAppSettings = null)
+    public static function start()
     {
         try 
         {
@@ -83,10 +73,8 @@ class Main
             {
                 self::$instance = new Main();
             }
-
-            $path = self::$instance->getPathAppSettings();
             
-            RouterKora::start($path);
+            RouterKora::start(self::$instance);
 
         } 
         catch (\Throwable $th) 
