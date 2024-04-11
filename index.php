@@ -8,6 +8,7 @@ require_once(__DIR__ . "/vendor/autoload.php");
 
 class Main
 {
+    private ?string $nameApp = null;
     private const FILE_SETTINGS_JSON = 'appsettings.json'; 
     private static $instance = null;
     private static $exceptionSettings = [
@@ -20,6 +21,7 @@ class Main
     public function __construct()
     {
         ini_set('display_errors', 1);
+        $this->nameApp = basename(__DIR__);
     }
 
     private function lastInterruptionException(Throwable $th)
@@ -53,8 +55,9 @@ class Main
         {
             if(empty($path))
             {
-                $dir = new DirectoryManager();
+                $dir = new DirectoryManager($this->nameApp);
                 $path = sprintf("{$dir->getCurrentStorage()}{$dir->getDirectorySeparator()}%s",self::FILE_SETTINGS_JSON);
+                dd($path);
             }
 
 
@@ -75,11 +78,12 @@ class Main
     {
         try 
         {
+            
             if(self::$instance == null)
             {
                 self::$instance = new Main();
             }
-    
+
             $path = self::$instance->getPathAppSettings();
             
             RouterKora::start($path);
@@ -92,4 +96,3 @@ class Main
     }
 }
 Main::start();
-
