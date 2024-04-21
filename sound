@@ -4,6 +4,8 @@
 use kora\cli\cmd\MakeAppCommand;
 use kora\cli\cmd\MakeControllerCommand;
 use kora\cli\cmd\ORM;
+use kora\lib\storage\DirectoryManager;
+use kora\lib\support\Log;
 
 require_once(__DIR__.'/vendor/autoload.php');
 
@@ -11,6 +13,7 @@ class Sound
 {
     private $argv;
     private ORM $ORM;
+    private Log $log;
 
     private $cmd = [
         "orm:make:entity" => "makeEntity",
@@ -21,7 +24,8 @@ class Sound
 
     public function __construct()
     {
-        $this->ORM = new ORM(__DIR__);
+        $this->log = new Log(new DirectoryManager('php-sound-cli'));
+        $this->ORM = new ORM(__DIR__,$this->log);
         $this->argv = $_SERVER['argv'];
         $this->cmd();
     }
@@ -30,7 +34,7 @@ class Sound
     {
     
         $cmd = isset($this->argv[1]) ? $this->argv[1] : null;
-  
+
         if(!empty($cmd))
         {
             if(array_key_exists($cmd,$this->cmd))
@@ -42,8 +46,14 @@ class Sound
                 if(method_exists($this,$m))
                 {
                     $this->{$m}($this->argv);
+                    exit;
                 }
+                
+                $this->log->save("command: {$cmd}::{$m} invalid!",true);
+                exit;
             }
+
+            $this->log->save("command: {$cmd} invalid!",true);
         }
         else
         {
@@ -88,5 +98,4 @@ class Sound
         echo "make:app - Cria um novo aplicativo" . PHP_EOL;
     }
 }
-
 (new Sound());

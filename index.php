@@ -54,7 +54,7 @@ class Main
     {
         try 
         {
-            $dir = new DirectoryManager($this->nameProject);
+            $dir = new DirectoryManager($this->nameProject,[],true);
 
             return $dir;
         } 
