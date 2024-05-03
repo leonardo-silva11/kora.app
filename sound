@@ -3,9 +3,8 @@
 
 use kora\cli\cmd\MakeAppCommand;
 use kora\cli\cmd\MakeControllerCommand;
+use kora\cli\cmd\MakeRouteCommand;
 use kora\cli\cmd\ORM;
-use kora\lib\storage\DirectoryManager;
-use kora\lib\support\Log;
 
 require_once(__DIR__.'/vendor/autoload.php');
 
@@ -13,19 +12,23 @@ class Sound
 {
     private $argv;
     private ORM $ORM;
-    private Log $log;
+    private MakeControllerCommand $MakeController;
+    private MakeRouteCommand $MakeRoute;
 
     private $cmd = [
         "orm:make:entity" => "makeEntity",
         'orm:make:migration' => "makeMigration",
         'orm:exec:migrations' => "execMigrations",
-        'orm:exec:migration' => "execMigrations"
+        'orm:exec:migration' => "execMigrations",
+        'app:make:controller' => 'makeController',
+        'app:make:route' => 'makeRoute',
     ];
 
     public function __construct()
     {
-        $this->log = new Log(new DirectoryManager('php-sound-cli'));
-        $this->ORM = new ORM(__DIR__,$this->log);
+        $this->ORM = new ORM(__DIR__);
+        $this->MakeController = new MakeControllerCommand(__DIR__);
+        $this->MakeRoute = new MakeRouteCommand(__DIR__);
         $this->argv = $_SERVER['argv'];
         $this->cmd();
     }
@@ -34,7 +37,7 @@ class Sound
     {
     
         $cmd = isset($this->argv[1]) ? $this->argv[1] : null;
-
+  
         if(!empty($cmd))
         {
             if(array_key_exists($cmd,$this->cmd))
@@ -46,14 +49,8 @@ class Sound
                 if(method_exists($this,$m))
                 {
                     $this->{$m}($this->argv);
-                    exit;
                 }
-                
-                $this->log->save("command: {$cmd}::{$m} invalid!",true);
-                exit;
             }
-
-            $this->log->save("command: {$cmd} invalid!",true);
         }
         else
         {
@@ -63,19 +60,19 @@ class Sound
 
     private function makeEntity($arg = [])
     {
-        $this->ORM->config($arg);
+        $this->ORM->config($arg,'entity');
         $this->ORM->makeEntity();
     }
 
     private function makeMigration($arg = [])
     {
-        $this->ORM->config($arg);
+        $this->ORM->config($arg,'entity');
         $this->ORM->makeMigration();
     }
 
     private function execMigrations($arg = [])
     {
-        $this->ORM->config($arg);
+        $this->ORM->config($arg,'entity');
         $this->ORM->execMigrations();
     }
 
@@ -85,10 +82,16 @@ class Sound
          $make->exec(); 
     }
 
-    private function makeController()
+    private function makeController($arg = [])
     {
-         $make = new MakeControllerCommand();  
-         $make->exec(); 
+         $this->MakeController->config($arg,'controller');
+         $this->MakeController->exec(); 
+    }
+
+    private function makeRoute($arg = [])
+    {
+         $this->MakeRoute->config($arg,'route');
+         $this->MakeRoute->exec(); 
     }
 
     private function showHelp()
@@ -98,4 +101,5 @@ class Sound
         echo "make:app - Cria um novo aplicativo" . PHP_EOL;
     }
 }
+
 (new Sound());
