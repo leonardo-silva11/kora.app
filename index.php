@@ -10,7 +10,10 @@ $SoundSingularity = function
 (
     $useRoutesInProject = false,
     $useSettingsInProject = false,
-    $displayErrors = true
+    $displayErrors = true,
+    $allowedOrigins = [
+        "http://localhost",
+    ],
 )
 {
     try 
@@ -27,7 +30,9 @@ $SoundSingularity = function
             'pathOfProject' => $pathOfProject,
             'nameOfProject' => $nameOfProject,
             'useRoutesInProject' => $useRoutesInProject,
-            'useSettingsInProject' => $useSettingsInProject
+            'useSettingsInProject' => $useSettingsInProject,
+            'ignoreOrigin' => true,
+            'allowedOrigins' => $allowedOrigins
         ],$defaultStorage);
 
     } 
