@@ -14,8 +14,10 @@ class Sound
     private ORM $ORM;
     private MakeControllerCommand $MakeController;
     private MakeRouteCommand $MakeRoute;
+    private MakeAppCommand $MakeApp;
 
     private $cmd = [
+        'build:app' => 'makeApp',
         "orm:make:entity" => "makeEntity",
         'orm:make:migration' => "makeMigration",
         'orm:exec:migrations' => "execMigrations",
@@ -29,6 +31,7 @@ class Sound
         $this->ORM = new ORM(__DIR__);
         $this->MakeController = new MakeControllerCommand(__DIR__);
         $this->MakeRoute = new MakeRouteCommand(__DIR__);
+        $this->MakeApp = new MakeAppCommand(__DIR__);
         $this->argv = $_SERVER['argv'];
         $this->cmd();
     }
@@ -58,6 +61,7 @@ class Sound
         }
     }
 
+
     private function makeEntity($arg = [])
     {
         $this->ORM->config($arg,'entity');
@@ -76,22 +80,22 @@ class Sound
         $this->ORM->execMigrations();
     }
 
-    private function makeApp()
+    private function makeApp($arg = [])
     {
-         $make = new MakeAppCommand();  
-         $make->exec(); 
+        $this->MakeApp->exec($arg);
     }
 
     private function makeController($arg = [])
     {
          $this->MakeController->config($arg,'controller');
-         $this->MakeController->exec(); 
+        // $this->MakeController->exec(); 
     }
 
     private function makeRoute($arg = [])
     {
+
          $this->MakeRoute->config($arg,'route');
-         $this->MakeRoute->exec(); 
+        // $this->MakeRoute->exec(); 
     }
 
     private function showHelp()
@@ -99,6 +103,7 @@ class Sound
         // Exiba uma mensagem de ajuda ou lista de comandos disponíveis
         echo "Sound CLI - Comandos disponíveis:" . PHP_EOL;
         echo "make:app - Cria um novo aplicativo" . PHP_EOL;
+        echo "make:configuration - Cria um novo aplicativo" . PHP_EOL;
     }
 }
 
