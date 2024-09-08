@@ -32,6 +32,7 @@ class Sound
         $this->MakeController = new MakeControllerCommand(__DIR__);
         $this->MakeRoute = new MakeRouteCommand(__DIR__);
         $this->MakeApp = new MakeAppCommand(__DIR__);
+ 
         $this->argv = $_SERVER['argv'];
         $this->cmd();
     }
@@ -100,10 +101,8 @@ class Sound
 
     private function showHelp()
     {
-        // Exiba uma mensagem de ajuda ou lista de comandos disponíveis
-        echo "Sound CLI - Comandos disponíveis:" . PHP_EOL;
-        echo "make:app - Cria um novo aplicativo" . PHP_EOL;
-        echo "make:configuration - Cria um novo aplicativo" . PHP_EOL;
+        print("make:app - Cria um novo aplicativo [Ex:  php sound build:app e-empregos-app -c=Home -f=true]");
+        print(PHP_EOL);
     }
 }
 
