@@ -22,7 +22,7 @@ class Sound
         'orm:make:migration' => "makeMigration",
         'orm:exec:migrations' => "execMigrations",
         'orm:exec:migration' => "execMigrations",
-        'app:make:controller' => 'makeController',
+        'make:controller' => 'makeController',
         'app:make:route' => 'makeRoute',
     ];
 
@@ -41,7 +41,9 @@ class Sound
     {
     
         $cmd = isset($this->argv[1]) ? $this->argv[1] : null;
-  
+
+        $command = str_ireplace(['make:','build:'],'',$this->argv[1]);
+
         if(!empty($cmd))
         {
             if(array_key_exists($cmd,$this->cmd))
@@ -52,7 +54,7 @@ class Sound
 
                 if(method_exists($this,$m))
                 {
-                    $this->{$m}($this->argv);
+                    $this->{$m}($this->argv,str_ireplace([':make',':build'],[''],$command));
                 }
             }
         }
@@ -86,10 +88,9 @@ class Sound
         $this->MakeApp->exec($arg);
     }
 
-    private function makeController($arg = [])
+    private function makeController($arg,$cmd)
     {
-         $this->MakeController->config($arg,'controller');
-        // $this->MakeController->exec(); 
+        $this->MakeApp->exec($arg,$cmd);
     }
 
     private function makeRoute($arg = [])
