@@ -3,6 +3,7 @@
 
 use kora\cli\cmd\MakeAppCommand;
 use kora\cli\cmd\MakeControllerCommand;
+use kora\cli\cmd\MakeEntityCommand;
 use kora\cli\cmd\MakeRouteCommand;
 use kora\cli\cmd\ORM;
 
@@ -11,24 +12,24 @@ require_once(__DIR__.'/vendor/autoload.php');
 class Sound
 {
     private $argv;
-    private ORM $ORM;
+    private MakeEntityCommand $MakeEntity;
     private MakeControllerCommand $MakeController;
     private MakeRouteCommand $MakeRoute;
     private MakeAppCommand $MakeApp;
 
     private $cmd = [
         'build:app' => 'makeApp',
-        "orm:make:entity" => "makeEntity",
-        'orm:make:migration' => "makeMigration",
-        'orm:exec:migrations' => "execMigrations",
-        'orm:exec:migration' => "execMigrations",
+        'orm:make:entity' => 'makeEntity',
+        //'orm:make:migration' => "makeMigration",
+        //'orm:exec:migrations' => "execMigrations",
+        //'orm:exec:migration' => "execMigrations",
         'make:controller' => 'makeController',
         'app:make:route' => 'makeRoute',
     ];
 
     public function __construct()
     {
-        $this->ORM = new ORM(__DIR__);
+        $this->MakeEntity = new MakeEntityCommand(__DIR__);
         $this->MakeController = new MakeControllerCommand(__DIR__);
         $this->MakeRoute = new MakeRouteCommand(__DIR__);
         $this->MakeApp = new MakeAppCommand(__DIR__);
@@ -63,15 +64,18 @@ class Sound
             $this->showHelp();
         }
     }
-
-
     private function makeEntity($arg = [])
+    {
+        $this->MakeEntity->exec($arg);
+    }
+
+   /* private function makeEntity($arg = [])
     {
         $this->ORM->config($arg,'entity');
         $this->ORM->makeEntity();
-    }
+    }*/
 
-    private function makeMigration($arg = [])
+  /*  private function makeMigration($arg = [])
     {
         $this->ORM->config($arg,'entity');
         $this->ORM->makeMigration();
@@ -81,7 +85,7 @@ class Sound
     {
         $this->ORM->config($arg,'entity');
         $this->ORM->execMigrations();
-    }
+    }*/
 
     private function makeApp($arg = [])
     {
