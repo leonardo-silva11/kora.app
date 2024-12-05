@@ -4,6 +4,7 @@
 use kora\cli\cmd\MakeAppCommand;
 use kora\cli\cmd\MakeControllerCommand;
 use kora\cli\cmd\MakeEntityCommand;
+use kora\cli\cmd\MakeMiddlewareCommand;
 use kora\cli\cmd\MakeRouteCommand;
 use kora\cli\cmd\ORM;
 
@@ -16,6 +17,7 @@ class Sound
     private MakeControllerCommand $MakeController;
     private MakeRouteCommand $MakeRoute;
     private MakeAppCommand $MakeApp;
+    private MakeMiddlewareCommand $MakeMiddleware;
 
     private $cmd = [
         'build:app' => 'makeApp',
@@ -24,6 +26,7 @@ class Sound
         //'orm:exec:migrations' => "execMigrations",
         //'orm:exec:migration' => "execMigrations",
         'make:controller' => 'makeController',
+        'make:middleware' => 'makeMiddleware',
         'app:make:route' => 'makeRoute',
     ];
 
@@ -32,6 +35,7 @@ class Sound
         $this->MakeEntity = new MakeEntityCommand(__DIR__);
         $this->MakeController = new MakeControllerCommand(__DIR__);
         $this->MakeRoute = new MakeRouteCommand(__DIR__);
+        $this->MakeMiddleware = new MakeMiddlewareCommand(__DIR__);
         $this->MakeApp = new MakeAppCommand(__DIR__);
  
         $this->argv = $_SERVER['argv'];
@@ -64,9 +68,16 @@ class Sound
             $this->showHelp();
         }
     }
+
     private function makeEntity($arg = [])
     {
         $this->MakeEntity->exec($arg);
+    }
+
+
+    private function makeMiddleware($arg = [])
+    {
+        $this->MakeMiddleware->exec($arg);
     }
 
    /* private function makeEntity($arg = [])
@@ -114,8 +125,9 @@ class Sound
     {
         print("------------------------------LIST OF ALL COMMANDS--------------------------------");
         print(PHP_EOL);
-        $this->printColored("make:app -> Create a new App.", "Ex: [php sound build:app {nameMyApp} -c=Home -f=true]", 32,31);
+        $this->printColored("make:app -> Create a new App.", "Ex: [php sound build:app {nameMyApp} -c={nameController} --front={true|false}]", 32,31);
         $this->printColored("make:controller -> Create a new controller.", "Ex: [php sound make:controller {nameApp} --controller={nameController} --model={name Model (optional)}]", 32,31);
+        $this->printColored("make:middleware -> Create a new middleware in route.", "Ex: [php sound make:middleware {nameMiddleware} --app={nameApp} --route={aliasRoute} --method={nameMethod} --order={after|before}]", 32,31);
         $this->printColored("orm:make:entity -> Create a new entity table.", "Ex: [php sound orm:make:entity {nameEntity} --app={nameApp} --underline={true|false}]", 32,31);
     }
 }
