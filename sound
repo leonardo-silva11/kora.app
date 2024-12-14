@@ -4,6 +4,7 @@
 use kora\cli\cmd\MakeAppCommand;
 use kora\cli\cmd\MakeControllerCommand;
 use kora\cli\cmd\MakeEntityCommand;
+use kora\cli\cmd\MakeInputCommand;
 use kora\cli\cmd\MakeMiddlewareCommand;
 use kora\cli\cmd\MakeRouteCommand;
 use kora\cli\cmd\ORM;
@@ -14,29 +15,32 @@ class Sound
 {
     private $argv;
     private MakeEntityCommand $MakeEntity;
-    private MakeControllerCommand $MakeController;
+    private MakeInputCommand $MakeInput;
+   // private MakeControllerCommand $MakeController;
     private MakeRouteCommand $MakeRoute;
     private MakeAppCommand $MakeApp;
     private MakeMiddlewareCommand $MakeMiddleware;
 
     private $cmd = [
         'build:app' => 'makeApp',
-        'orm:make:entity' => 'makeEntity',
         //'orm:make:migration' => "makeMigration",
         //'orm:exec:migrations' => "execMigrations",
         //'orm:exec:migration' => "execMigrations",
         'make:controller' => 'makeController',
         'make:middleware' => 'makeMiddleware',
+        'make:input' => 'makeInput',
+        'orm:make:entity' => 'makeEntity',
         'app:make:route' => 'makeRoute',
     ];
 
     public function __construct()
     {
         $this->MakeEntity = new MakeEntityCommand(__DIR__);
-        $this->MakeController = new MakeControllerCommand(__DIR__);
+      //  $this->MakeController = new MakeControllerCommand(__DIR__);
         $this->MakeRoute = new MakeRouteCommand(__DIR__);
         $this->MakeMiddleware = new MakeMiddlewareCommand(__DIR__);
         $this->MakeApp = new MakeAppCommand(__DIR__);
+        $this->MakeInput = new MakeInputCommand(__DIR__);
  
         $this->argv = $_SERVER['argv'];
         $this->cmd();
@@ -62,6 +66,11 @@ class Sound
                     $this->{$m}($this->argv,str_ireplace([':make',':build'],[''],$command));
                 }
             }
+            else
+            {
+                $validsCommands = implode("\r\n",array_keys($this->cmd));
+                $this->printColored("Invalid command {$this->argv[1]}, valids commands are:","\r\n{$validsCommands}",31,32);
+            }
         }
         else
         {
@@ -78,6 +87,11 @@ class Sound
     private function makeMiddleware($arg = [])
     {
         $this->MakeMiddleware->exec($arg);
+    }
+
+    private function makeInput($arg = [])
+    {
+        $this->MakeInput->exec($arg);
     }
 
    /* private function makeEntity($arg = [])
@@ -128,6 +142,7 @@ class Sound
         $this->printColored("make:app -> Create a new App.", "Ex: [php sound build:app {nameMyApp} -c={nameController} --front={true|false}]", 32,31);
         $this->printColored("make:controller -> Create a new controller.", "Ex: [php sound make:controller {nameApp} --controller={nameController} --model={name Model (optional)}]", 32,31);
         $this->printColored("make:middleware -> Create a new middleware in route.", "Ex: [php sound make:middleware {nameMiddleware} --app={nameApp} --route={aliasRoute} --method={nameMethod} --order={after|before}]", 32,31);
+        $this->printColored("make:input -> Create a new input class.", "Ex: [php sound make:input {nameInput} --app={nameApp}]", 32,31);
         $this->printColored("orm:make:entity -> Create a new entity table.", "Ex: [php sound orm:make:entity {nameEntity} --app={nameApp} --underline={true|false}]", 32,31);
     }
 }
